@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>PHP Bugs</title>
+<subtitle>https://bugs.php.net/</subtitle>
+<author>
+    <name>https://bugs.php.net/</name>
+</author>
+<link href="https://bugs.php.net//" />
+<id>https://bugs.php.net/</id>
+
+{% for new in data %}
+<entry>
+  <title>{{ new['title'] }}</title>
+  <link href="https://bugs.php.net/{{ new['url'] }}" />
+  <content type="html"><![CDATA[ Date: {{ new['date'] }}<br>OS: {{ new['os'] }}<br>PHP Version: {{ new['php_version'] }}<br>Package: {{ new['package'] }}<br>Title: <a href="https://bugs.php.net/{{ new['url'] }}">{{ new['title'] }}</a> ]]></content>
+</entry>
+{% endfor %}
+</feed>

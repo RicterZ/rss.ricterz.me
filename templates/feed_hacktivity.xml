@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>HackerOne Hacker Activity</title>
+<subtitle>Hacker Activity Filter By Public</subtitle>
+<author>
+    <name>hackerone.com</name>
+</author>
+<link href="https://hackerone.com/hacktivity" />
+<id>https://hackerone.com/hacktivity</id>
+
+{% for new in data %}
+<entry>
+  <title>{{ new['title'] }}</title>
+  <link href="{{ new['url'] }}" />
+  <id>{{ new['url'] }}</id>
+  <content type="html"><![CDATA[ <a href="{{ new['url'] }}">{{ new['title'] }}</a>]]></content>
+</entry>
+{% endfor %}
+</feed>
