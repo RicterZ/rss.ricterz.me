@@ -1,17 +1,8 @@
-"""
-A crawler of RSS 
-"""
 import re
-import os
-import web
-import json
 import requests
 
 from bs4 import BeautifulSoup as bs
 
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'rss.db3')
-DB = web.database(dbn='sqlite', db=DB_PATH)
 
 hackerone_query = {
     "query": "query Hacktivity_page_QueryRelayQL($id_0:ID!,$first_1:Int!,$last_4:Int!,"
@@ -63,7 +54,7 @@ def parse_nhentai():
         title = doujinshi_container.text.strip()
         title = (title[:85] + '..') if len(title) > 85 else title
         id_ = re.search('/g/([0-9]+)/', doujinshi.a['href']).group(1)
-        img = doujinshi.img.attrs['data-src']
+        img = doujinshi.img.attrs['data-rsser']
         result.append({'id': id_, 'title': title, 'img': img})
     return result
 
@@ -110,71 +101,3 @@ def parse_php_bugs():
         ret.append(data)
 
     return ret
-
-
-def request(url):
-    """Resuest urls with headers"""
-    req = requests.get(url, verify=False, headers={
-        'User-Agent': 'curl/1.1',
-        'x-requested-with': 'XMLHttpRequest',
-        'accept': 'application/json'
-    })
-    try:
-        return req.json()
-    except Exception as e:
-        print(e)
-
-    return {}
-
-
-def save_data(data, table_name):
-    print("UPDATE_TABLE %s" % table_name)
-    DB.update(table_name, where='id=1', data=json.dumps(data))
-
-
-def init():
-    # Create rss.db3 if it don't exist.
-    if not os.path.exists(DB_PATH):
-        DB.query('''
-            create table json_raw_data_hacktivity (
-                id int(4) primary key not null,
-                data longtext default null
-            );
-        ''')
-
-        DB.query('''
-            create table json_raw_data_legalhackers (
-                id int(4) primary key not null,
-                data longtext default null
-            );
-        ''')
-        DB.query('''
-            create table json_raw_data_nhentai (
-            id int(4) primary key not null,
-                data longtext default null
-        )
-        ''')
-        DB.query('''
-            create table json_raw_data_php_bugs (
-            id int(4) primary key not null,
-                data longtext default null
-        )
-        ''')
-        DB.insert('json_raw_data_legalhackers', id=1, data=None)
-        DB.insert('json_raw_data_hacktivity', id=1, data=None)
-        DB.insert('json_raw_data_nhentai', id=1, data=None)
-        DB.insert('json_raw_data_php_bugs', id=1, data=None)
-
-
-if __name__ == '__main__':
-
-    init()
-    update_dict = {
-        'json_raw_data_hacktivity': parse_hackerone,
-        'json_raw_data_nhentai': parse_nhentai,
-        'json_raw_data_legalhackers': parse_legalhackers,
-        'json_raw_data_php_bugs': parse_php_bugs
-    }
-
-    for table, func in update_dict.items():
-        save_data(func(), table)

@@ -1,8 +1,8 @@
 import web
-import os
 import json
 import logging
 import jinja2 as jj
+from constants import DB, TEMPLATE
 
 
 URLS = (
@@ -13,10 +13,6 @@ URLS = (
     '/(.*)', 'IndexHandler',
 )
 
-
-DB_PATH = os.path.join(os.path.dirname(__file__), 'rss.db3')
-TEMPLATE = os.path.join(os.path.dirname(__file__), 'templates')
-DB = web.database(dbn='sqlite', db=DB_PATH)
 ENV = jj.Environment(loader=jj.FileSystemLoader(TEMPLATE), autoescape=True)
 
 
