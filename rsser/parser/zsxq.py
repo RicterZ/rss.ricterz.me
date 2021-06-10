@@ -10,21 +10,30 @@ HEADERS = {
 
 def parse_zsxq():
     groups = [
-        '88512188158852'
+        '88512188158852',
+        '555848225184',
+        '2212251881',
+        '28518424185521',
     ]
 
     result = []
     for group in groups:
         url = 'https://api.zsxq.com/v2/groups/{}/topics?scope=all&count=10'.format(group)
-        resp = requests.get(url).json()
+        resp = requests.get(url, headers=HEADERS, verify=False).json()
+
+        if not resp['succeeded'] and resp['code'] == 1059:
+            resp = requests.get(url, headers=HEADERS, verify=False).json()
+
         if resp['succeeded']:
             for topic in resp['resp_data']['topics']:
-                result.append({
-                    'group': topic['group']['name'],
-                    'author': topic['talk']['owner']['name'],
-                    'text': topic['talk']['text'],
-                    'create_time': topic['create_time']
-                })
+                if topic['type'] == 'talk':
+                    result.append({
+                        'group': topic['group']['name'],
+                        'author': topic['talk']['owner']['name'],
+                        'text': topic['talk']['text'],
+                        'topic_id': topic['topic_id'],
+                        'create_time': topic['create_time']
+                    })
 
-    result = sorted(result, key=lambda k: k['create_time'])
+    result = sorted(result, key=lambda k: k['create_time'])[::-1]
     return result

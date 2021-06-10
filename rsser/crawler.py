@@ -12,15 +12,17 @@ def main():
         'json_raw_data_nhentai': parse_nhentai,
         'json_raw_data_legalhackers': parse_legalhackers,
         'json_raw_data_php_bugs': parse_php_bugs,
-    }
-
-    update_dict = {
         'json_raw_data_zsxq': parse_zsxq,
     }
+
     init_db(update_dict.keys())
 
     for table, func in update_dict.items():
-        save_data(func(), table)
+        try:
+            save_data(func(), table)
+        except Exception as e:
+            print('Error: ' + str(e))
+            continue
 
     return 0
 

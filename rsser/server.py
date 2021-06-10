@@ -2,7 +2,8 @@ import web
 import json
 import logging
 import jinja2 as jj
-from constants import DB, TEMPLATE
+
+from rsser.constants import DB, TEMPLATE
 
 
 URLS = (
@@ -10,6 +11,7 @@ URLS = (
     '/legalhackers', 'LegalHackersHandler',
     '/nhentai', 'NHentaiHandler',
     '/php_bugs', 'PHPBugsHandler',
+    '/zsxq', 'ZSXQHandler',
     '/(.*)', 'IndexHandler',
 )
 
@@ -56,9 +58,13 @@ class PHPBugsHandler(BaseHandler):
     template = 'feed_php.xml'
 
 
+class ZSXQHandler(BaseHandler):
+    table = 'json_raw_data_zsxq'
+    template = 'feed_zsxq.xml'
+
+
 if __name__ == "__main__":
-    application = web.application(URLS, globals()).wsgifunc()
-    app = web.application(URLS, globals())
+    app = web.application(URLS, globals(), autoreload=False)
 
     logger = logging.getLogger()
     logger.propagate = False

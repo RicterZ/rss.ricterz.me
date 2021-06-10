@@ -1,7 +1,7 @@
 import os
-import requests
 import json
-from constants import DB, DB_PATH
+
+from rsser.constants import DB, DB_PATH
 
 
 def init_db(tables):
