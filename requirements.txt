@@ -1,0 +1,4 @@
+web.py
+BeautifulSoup4~=4.9.3
+Jinja2~=2.11.3
+requests~=2.25.1
