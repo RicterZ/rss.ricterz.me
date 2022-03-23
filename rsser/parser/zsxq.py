@@ -2,9 +2,8 @@ import requests
 
 
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) '
-                  'Chrome/91.0.4472.77 Safari/537.36 ',
-    'Cookie': 'zsxq_access_token=74B953E3-4FDA-6D96-6D1A-5923896A2F18_D4F63B5DA201D049',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+    'Cookie': 'zsxq_access_token=07F747D5-5515-B9B2-06C4-543889A33297_D4F63B5DA201D049',
 }
 
 
@@ -27,10 +26,19 @@ def parse_zsxq():
         if resp['succeeded']:
             for topic in resp['resp_data']['topics']:
                 if topic['type'] == 'talk':
+                    text = u''
+
+                    if 'text' in topic['talk']:
+                        text += topic['talk']['text']
+
+                    if 'files' in topic['talk']:
+                        fn = [i['name'] for i in topic['talk']['files']]
+                        text += u'<br>Attachments: {}'.format(u', '.join(fn))
+
                     result.append({
                         'group': topic['group']['name'],
                         'author': topic['talk']['owner']['name'],
-                        'text': topic['talk']['text'],
+                        'text': text,
                         'topic_id': topic['topic_id'],
                         'create_time': topic['create_time']
                     })

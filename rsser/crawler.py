@@ -1,9 +1,9 @@
 """
 A crawler of RSS 
 """
-from utils import init_db, save_data
+from rsser.utils import init_db, save_data
 from rsser.parser.legacy import *
-from rsser.parser.zsxq import parse_zsxq
+from rsser.parser.zsxq_public import parse_zsxq_public
 
 
 def main():
@@ -12,7 +12,11 @@ def main():
         'json_raw_data_nhentai': parse_nhentai,
         'json_raw_data_legalhackers': parse_legalhackers,
         'json_raw_data_php_bugs': parse_php_bugs,
-        'json_raw_data_zsxq': parse_zsxq,
+        'json_raw_data_zsxq': parse_zsxq_public,
+    }
+
+    update_dict = {
+        'json_raw_data_zsxq': parse_zsxq_public,
     }
 
     init_db(update_dict.keys())

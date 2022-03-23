@@ -1,5 +1,6 @@
 import re
 import requests
+import json
 
 from bs4 import BeautifulSoup as bs
 
@@ -45,7 +46,7 @@ hackerone_query = {
 
 def parse_nhentai():
     result = []
-    response = requests.get("http://nhentai.net/language/chinese/").content
+    response = requests.get("http://nhentai.net/language/chinese/", verify=False).content
 
     html = bs(response, 'html.parser')
     doujinshi_search_result = html.find_all('div', attrs={'class': 'gallery'})
@@ -54,7 +55,7 @@ def parse_nhentai():
         title = doujinshi_container.text.strip()
         title = (title[:85] + '..') if len(title) > 85 else title
         id_ = re.search('/g/([0-9]+)/', doujinshi.a['href']).group(1)
-        img = doujinshi.img.attrs['data-rsser']
+        img = doujinshi.img.attrs['data-src']
         result.append({'id': id_, 'title': title, 'img': img})
     return result
 
@@ -68,7 +69,9 @@ def parse_legalhackers():
 
 def parse_hackerone():
     result = []
-    data = requests.post('https://hackerone.com/graphql', json=hackerone_query).json()
+    post_data = json.dumps(hackerone_query)
+    headers = {'Content-Type': 'application/json'}
+    data = requests.post('https://hackerone.com/graphql', data=post_data, headers=headers).json()
     for _, value in data['data']['node'].items():
         if isinstance(value, dict):
             for item in value['edges']:

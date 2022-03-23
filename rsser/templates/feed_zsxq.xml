@@ -8,7 +8,7 @@
   <title>{{ row['group'] }} - {{ row['author'] }}</title>
   <link href="https://wx.zsxq.com/dweb2/index/topic_detail/{{ row['topic_id'] }}"/>
   <published>{{ row['create_time'] }}</published>
-  <content type="html"><![CDATA[ {{ row['text']  }} ]]></content>
+  <content type="html"><![CDATA[ {{ row['text'] | safe  }} ]]></content>
 </entry>
 {% endfor %}
 </feed>

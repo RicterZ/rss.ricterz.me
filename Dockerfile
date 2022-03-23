@@ -2,10 +2,12 @@ FROM ubuntu:18.04
 
 WORKDIR /opt/crawler
 
-RUN apt update && apt -y install python python-pip proxychains && \
-    pip install web.py jinja2 requests beautifulsoup4 lxml
+RUN apt update && apt -y install python python-pip proxychains
+ADD requirements.txt /opt/crawler
+RUN pip install -r requirements.txt
 
 ADD conf/proxychains.conf /etc
-ADD rsser /opt/crawler/
+ADD rsser /opt/crawler/rsser
 
-ENTRYPOINT proxychains python main.py
+RUN mkdir /opt/crawler/data
+ENTRYPOINT python -m rsser.server

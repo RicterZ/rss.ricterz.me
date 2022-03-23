@@ -5,7 +5,10 @@ from rsser.constants import DB, DB_PATH
 
 
 def init_db(tables):
-    if not os.path.exists(DB_PATH):
+    if os.path.exists(DB_PATH) and os.stat(DB_PATH).st_size == 0:
+        os.unlink(DB_PATH)
+
+    if not os.path.exists(DB_PATH) :
         for table in tables:
             DB.query('''
                 create table {} (
