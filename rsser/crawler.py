@@ -12,7 +12,7 @@ def main():
         'json_raw_data_nhentai': parse_nhentai,
         'json_raw_data_legalhackers': parse_legalhackers,
         'json_raw_data_php_bugs': parse_php_bugs,
-        'json_raw_data_zsxq': parse_zsxq_public,
+        # 'json_raw_data_zsxq': parse_zsxq_public,
     }
 
     init_db(update_dict.keys())
