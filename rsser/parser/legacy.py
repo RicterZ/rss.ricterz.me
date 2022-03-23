@@ -75,6 +75,8 @@ def parse_hackerone():
     for _, value in data['data']['node'].items():
         if isinstance(value, dict):
             for item in value['edges']:
+                item['node']['report']['title'] = '{}: {}'.format(item['node']['team']['name'], 
+                                                                  item['node']['report']['title'])
                 result.append(item['node']['report'])
 
     return result

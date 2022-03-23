@@ -15,10 +15,6 @@ def main():
         'json_raw_data_zsxq': parse_zsxq_public,
     }
 
-    update_dict = {
-        'json_raw_data_zsxq': parse_zsxq_public,
-    }
-
     init_db(update_dict.keys())
 
     for table, func in update_dict.items():
