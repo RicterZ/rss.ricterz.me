@@ -5,43 +5,7 @@ import json
 from bs4 import BeautifulSoup as bs
 
 
-hackerone_query = {
-    "query": "query Hacktivity_page_QueryRelayQL($id_0:ID!,$first_1:Int!,$last_4:Int!,"
-             "$secure_order_by_2:FiltersHacktivityItemFilterOrder!,"
-             "$where_3:FiltersHacktivityItemFilterInput!,$size_5:ProfilePictureSizes!) {node(id:$id_0) "
-             "{...Fc}} fragment F0 on HacktivityItemInterface {id,__typename} fragment F1 on "
-             "HacktivityItemInterface {votes {total_count},_votes20kQZj:votes(last:$last_4) {edges {"
-             "node {id,user {username,id}},cursor},pageInfo {hasNextPage,hasPreviousPage}},"
-             "upvoted_by_current_user,id,__typename,...F0} fragment F2 on Undisclosed {id,"
-             "reporter {username,id},team {handle,name,_profile_picture1Fh783:profile_picture("
-             "size:$size_5),url,id},latest_disclosable_action,latest_disclosable_activity_at,"
-             "requires_view_privilege,total_awarded_amount,currency} fragment F3 on Undisclosed {id,"
-             "...F2} fragment F4 on Disclosed {id,reporter {username,id},team {handle,name,"
-             "_profile_picture1Fh783:profile_picture(size:$size_5),url,id},report {title,substate,url,"
-             "id},latest_disclosable_action,latest_disclosable_activity_at,total_awarded_amount,"
-             "severity_rating,currency} fragment F5 on Disclosed {id,...F4} fragment F6 on "
-             "HackerPublished {id,reporter {username,id},team {handle,name,"
-             "_profile_picture1Fh783:profile_picture(size:$size_5),url,id},report {url,title,substate,"
-             "id},latest_disclosable_activity_at,severity_rating} fragment F7 on HackerPublished {id,"
-             "...F6} fragment F8 on Node {id,__typename} fragment F9 on HacktivityItemUnion {"
-             "__typename,...F1,...F3,...F5,...F7,...F8} fragment Fa on HacktivityItemInterface {id,_id,"
-             "__typename,...F9} fragment Fb on HacktivityItemConnection {total_count,pageInfo {"
-             "hasNextPage,hasPreviousPage},edges {cursor,node {__typename,...Fa,...F8}}} fragment Fc on "
-             "Query {_hacktivity_items2Uw4QA:hacktivity_items(first:$first_1,query:\"\","
-             "secure_order_by:$secure_order_by_2,where:$where_3) {total_count,...Fb},id}",
-    "variables": {
-        "id_0": "Z2lkOi8vaGFja2Vyb25lL09iamVjdHM6OlF1ZXJ5L3N0YXRpYw==",
-        "first_1": 25,
-        "last_4": 10,
-        "secure_order_by_2": {
-            "latest_disclosable_activity_at": {"_direction": "DESC"}
-        },
-        "where_3": {
-            "report": {"disclosed_at": {"_is_null": False}}
-        },
-        "size_5": "medium"
-    }
-}
+hackerone_query = {"operationName":"HacktivityPageQuery","variables":{"querystring":"","where":{"report":{"disclosed_at":{"_is_null":False}}},"orderBy":None,"secureOrderBy":{"latest_disclosable_activity_at":{"_direction":"DESC"}},"count":25,"maxShownVoters":10},"query":"query HacktivityPageQuery($querystring: String, $orderBy: HacktivityItemOrderInput, $secureOrderBy: FiltersHacktivityItemFilterOrder, $where: FiltersHacktivityItemFilterInput, $count: Int, $cursor: String, $maxShownVoters: Int) {\n  me {\n    id\n    __typename\n  }\n  hacktivity_items(\n    first: $count\n    after: $cursor\n    query: $querystring\n    order_by: $orderBy\n    secure_order_by: $secureOrderBy\n    where: $where\n  ) {\n    ...HacktivityList\n    __typename\n  }\n}\n\nfragment HacktivityList on HacktivityItemConnection {\n  pageInfo {\n    endCursor\n    hasNextPage\n    __typename\n  }\n  edges {\n    node {\n      ... on HacktivityItemInterface {\n        id\n        databaseId: _id\n        __typename\n      }\n      __typename\n    }\n    ...HacktivityItem\n    __typename\n  }\n  __typename\n}\n\nfragment HacktivityItem on HacktivityItemUnionEdge {\n  node {\n    ... on HacktivityItemInterface {\n      id\n      type: __typename\n    }\n    ... on Undisclosed {\n      id\n      ...HacktivityItemUndisclosed\n      __typename\n    }\n    ... on Disclosed {\n      id\n      ...HacktivityItemDisclosed\n      __typename\n    }\n    ... on HackerPublished {\n      id\n      ...HacktivityItemHackerPublished\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n\nfragment HacktivityItemUndisclosed on Undisclosed {\n  id\n  votes {\n    total_count\n    __typename\n  }\n  voters: votes(last: $maxShownVoters) {\n    edges {\n      node {\n        id\n        user {\n          id\n          username\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  upvoted: upvoted_by_current_user\n  reporter {\n    id\n    username\n    ...UserLinkWithMiniProfile\n    __typename\n  }\n  team {\n    handle\n    name\n    medium_profile_picture: profile_picture(size: medium)\n    url\n    id\n    ...TeamLinkWithMiniProfile\n    __typename\n  }\n  latest_disclosable_action\n  latest_disclosable_activity_at\n  requires_view_privilege\n  total_awarded_amount\n  currency\n  __typename\n}\n\nfragment TeamLinkWithMiniProfile on Team {\n  id\n  handle\n  name\n  __typename\n}\n\nfragment UserLinkWithMiniProfile on User {\n  id\n  username\n  __typename\n}\n\nfragment HacktivityItemDisclosed on Disclosed {\n  id\n  reporter {\n    id\n    username\n    ...UserLinkWithMiniProfile\n    __typename\n  }\n  votes {\n    total_count\n    __typename\n  }\n  voters: votes(last: $maxShownVoters) {\n    edges {\n      node {\n        id\n        user {\n          id\n          username\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  upvoted: upvoted_by_current_user\n  team {\n    handle\n    name\n    medium_profile_picture: profile_picture(size: medium)\n    url\n    id\n    ...TeamLinkWithMiniProfile\n    __typename\n  }\n  report {\n    id\n    databaseId: _id\n    title\n    substate\n    url\n    __typename\n  }\n  latest_disclosable_action\n  latest_disclosable_activity_at\n  total_awarded_amount\n  severity_rating\n  currency\n  __typename\n}\n\nfragment HacktivityItemHackerPublished on HackerPublished {\n  id\n  reporter {\n    id\n    username\n    ...UserLinkWithMiniProfile\n    __typename\n  }\n  votes {\n    total_count\n    __typename\n  }\n  voters: votes(last: $maxShownVoters) {\n    edges {\n      node {\n        id\n        user {\n          id\n          username\n          __typename\n        }\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n  upvoted: upvoted_by_current_user\n  team {\n    id\n    handle\n    name\n    medium_profile_picture: profile_picture(size: medium)\n    url\n    ...TeamLinkWithMiniProfile\n    __typename\n  }\n  report {\n    id\n    url\n    title\n    substate\n    __typename\n  }\n  latest_disclosable_activity_at\n  severity_rating\n  __typename\n}\n"}
 
 
 def parse_nhentai():
@@ -69,15 +33,24 @@ def parse_legalhackers():
 
 def parse_hackerone():
     result = []
-    post_data = json.dumps(hackerone_query)
-    headers = {'Content-Type': 'application/json'}
-    data = requests.post('https://hackerone.com/graphql', data=post_data, headers=headers).json()
-    for _, value in data['data']['node'].items():
+    # post_data = json.dumps(hackerone_query)
+    headers = {
+        'Content-Type': 'application/json',
+        'x-csrf-token': 'ZCcJmm5R+HoLgDNHStZGp/45Yt/hNft+N7UTDX6lh8RdP/Xv/qbJQB09hrkhYhq8fulQDS2lV7aXg0Y17jJCOA==',
+        'Cookie': 'h1_device_id=eef37823-48b5-42e1-b243-6e7fc08428f1; optimizelyEndUserId=oeu1660730260777r0.01829525761365991; _gcl_au=1.1.1104333941.1660730262; _ga=GA1.2.624690036.1660730262; _mkto_trk=id:168-NAU-732&token:_mch-hackerone.com-1660730262445-81314; _gid=GA1.2.832040327.1662356812; AMP_MKTG_b7cba2c14c=JTdCJTIycmVmZXJyZXIlMjIlM0ElMjJodHRwcyUzQSUyRiUyRnd3dy5oYWNrZXJvbmUuY29tJTJGJTIyJTJDJTIycmVmZXJyaW5nX2RvbWFpbiUyMiUzQSUyMnd3dy5oYWNrZXJvbmUuY29tJTIyJTdE; _dd_s=rum=0&expire=1662357716723; __Host-session=azVmMkZlNnpGV1lYaGhaMXZCMmpJbkdEbXg2Znl3VTFraXdrOVZmZ09uRjdmbm1kSlBNNGkyaDBSUTRNS3FoQm1qTTMzMUNHYkhpZ0hVYkMyMDVHVGdmOWdCL1RGa29RNHJQQi9mb3k4KytUTlVBcFhNQmlrMEVhalFiTWNIdm5CODI1VnFmWDhtcXllVEhEUzBTRzJoeG9UTDBLUzAxc3FvU1VvSzVrbEZKcGRlbCtGNUF1REEzT0d2dkNPbXUyaFg2MmJTQnRlaWNCck9uendEZUx1ejhDNVNyWE9OdHN6M2srdzJHemRTZENxMFdBdXUrdXdmM2w3alZocWFiMEdVVmFjNGswcmNBYlNMcytiVHpyL2wzV3FmWVFJanNzQS9Qem5YMjJHRDQ9LS1sdE13Q3NGSy9oY2N0WDR0b3dlK0dBPT0%3D--f1a03aa60891d922e8f4318a3b0423bf067b5a88; AMP_b7cba2c14c=JTdCJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJkZXZpY2VJZCUyMiUzQSUyMjQzZDhlYzgyLWYzMTgtNDM3NS04NjFlLWUzZmMyMGY4ZDY4ZCUyMiUyQyUyMmxhc3RFdmVudFRpbWUlMjIlM0ExNjYyMzU2ODE3MTAwJTJDJTIyc2Vzc2lvbklkJTIyJTNBMTY2MjM1NjgxMTY1OCUyQyUyMnVzZXJJZCUyMiUzQW51bGwlN0Q='
+    }
+    data = requests.post('https://hackerone.com/graphql', json=hackerone_query, headers=headers).json()
+    for value in data['data']['hacktivity_items']['edges']:
         if isinstance(value, dict):
-            for item in value['edges']:
+            item = value
+            if item['node']['total_awarded_amount']:
+                item['node']['report']['title'] = '[${}] {}: {}'.format(item['node']['total_awarded_amount'],
+                                                                  item['node']['team']['name'], 
+                                                                  item['node']['report']['title'])
+            else:
                 item['node']['report']['title'] = '{}: {}'.format(item['node']['team']['name'], 
                                                                   item['node']['report']['title'])
-                result.append(item['node']['report'])
+            result.append(item['node']['report'])
 
     return result
 
