@@ -38,11 +38,6 @@ class IndexHandler(BaseHandler):
     content_type = 'text/html'
 
 
-class LegalHackersHandler(BaseHandler):
-    table = 'json_raw_data_legalhackers'
-    template = 'feed_legalhackers.xml'
-
-
 class HacktivityFeedHandler(BaseHandler):
     table = 'json_raw_data_hacktivity'
     template = 'feed_hacktivity.xml'
@@ -53,14 +48,6 @@ class NHentaiHandler(BaseHandler):
     template = 'feed_nhentai.xml'
 
 
-class PHPBugsHandler(BaseHandler):
-    table = 'json_raw_data_php_bugs'
-    template = 'feed_php.xml'
-
-
-class ZSXQHandler(BaseHandler):
-    table = 'json_raw_data_zsxq'
-    template = 'feed_zsxq.xml'
 
 
 if __name__ == "__main__":
